@@ -389,14 +389,14 @@
         }
 
         function sendToBridge() {
-            // Envia el estado actual al backend local en Python si está ejecutándose
-            fetch('http://localhost:5000/api/status', {
+            fetch('https://bluelock-server-xrff.onrender.com/api/status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(state)
-            }).catch(() => {
-                // Silencioso si no está el backend corriendo en ese momento
-            });
+            })
+        .then(response => response.json())
+        .then(data => console.log("Estado sincronizado:", data))
+        .catch(error => console.error("Error al conectar con Render:", error));
         }
 
         render();

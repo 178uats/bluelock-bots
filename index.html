@@ -311,95 +311,71 @@
     </div>
 
     <script>
-        const BOTS = [
-            { id: "barou", name: "Barou Shoei", team: "Ubers" },
-            { id: "niko", name: "Ikki Niko", team: "Ubers" },
-            { id: "aryu", name: "Jyubei Aryu", team: "Ubers" },
-            { id: "snuffy", name: "Marc Snuffy", team: "Ubers" },
-            { id: "lorenzo", name: "Don Lorenzo", team: "Ubers" },
-            { id: "aiku", name: "Oliver Aiku", team: "Ubers" },
-            { id: "sendo", name: "Shuto Sendo", team: "Ubers" },
-            { id: "yukio", name: "Yukio Ishikari", team: "Ubers" },
-            { id: "nagi", name: "Seishiro Nagi", team: "Manshine" },
-            { id: "reo", name: "Mikage Reo", team: "Manshine" },
-            { id: "chris", name: "Chris Prince", team: "Manshine" },
-            { id: "charles", name: "Charles Chevalier", team: "PxG" },
-            { id: "shidou", name: "Ryusei Shidou", team: "PxG" },
-            { id: "ego", name: "Jinpachi Ego", team: "Blue Lock" }
-        ];
+    // 1. Configuración de los 14 bots
+    const botsData = [
+        { id: 'barou', name: 'Shoei Barou' },
+        { id: 'niko', name: 'Ikki Niko' },
+        { id: 'aryu', name: 'Jyubei Aryu' },
+        { id: 'snuffy', name: 'Marc Snuffy' },
+        { id: 'lorenzo', name: 'Don Lorenzo' },
+        { id: 'aiku', name: 'Oliver Aiku' },
+        { id: 'sendo', name: 'Shuto Sendo' },
+        { id: 'yukio', name: 'Yukio Ishikari' },
+        { id: 'nagi', name: 'Seishiro Nagi' },
+        { id: 'reo', name: 'Mikage Reo' },
+        { id: 'chris', name: 'Chris Prince' },
+        { id: 'charles', name: 'Charles Chevalier' },
+        { id: 'shidou', name: 'Ryusei Shidou' },
+        { id: 'ego', name: 'Jinpachi Ego' }
+    ];
 
-        const state = {};
-        BOTS.forEach(bot => state[bot.id] = false);
+    // Estado global
+    let state = {};
+    botsData.forEach(bot => state[bot.id] = false);
 
-        function log(msg) {
-            const logBox = document.getElementById('sys-log');
-            const time = new Date().toLocaleTimeString();
-            logBox.innerHTML += `[${time}] > ${msg}<br>`;
-            logBox.scrollTop = logBox.scrollHeight;
+    // 2. Función para renderizar los botones en pantalla
+    function renderBots() {
+        const container = document.getElementById('bot-container');
+        if (!container) return;
+    
+        container.innerHTML = '';
+        botsData.forEach(bot => {
+            const card = document.createElement('div');
+            card.className = 'bot-card';
+            card.innerHTML = `
+                <h3>${bot.name}</h3>
+                <button id="btn-${bot.id}" onclick="toggleBot('${bot.id}')" class="btn-off">
+                    ${state[bot.id] ? 'Encendido' : 'Apagado'}
+                </button>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // 3. Función para cambiar el estado y enviar a Render
+    function toggleBot(botId) {
+        state[botId] = !state[botId];
+    
+        // Actualizar apariencia del botón
+        const btn = document.getElementById(`btn-${botId}`);
+        if (btn) {
+            btn.innerText = state[botId] ? 'Encendido' : 'Apagado';
+            btn.className = state[botId] ? 'btn-on' : 'btn-off';
         }
-
-        function render() {
-            const grid = document.getElementById('bot-grid');
-            grid.innerHTML = '';
-
-            let activeCount = 0;
-
-            BOTS.forEach(bot => {
-                const isActive = state[bot.id];
-                if (isActive) activeCount++;
-
-                const card = document.createElement('div');
-                card.className = `bot-card ${isActive ? 'active' : 'inactive'}`;
-                card.innerHTML = `
-                    <div class="bot-header">
-                        <span class="bot-name">${bot.name}</span>
-                        <span class="bot-team">${bot.team}</span>
-                    </div>
-                    <div class="bot-status">
-                        <span class="status-dot"></span>
-                        <span>${isActive ? 'Online / Activo' : 'Offline / Detenido'}</span>
-                    </div>
-                    <div class="switch-container">
-                        <span style="font-size: 0.8rem; color: var(--text-muted)">Estado del Bot</span>
-                        <label class="switch">
-                            <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleBot('${bot.id}', this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
-            document.getElementById('stat-active').textContent = activeCount;
-            document.getElementById('stat-inactive').textContent = BOTS.length - activeCount;
-        }
-
-        function toggleBot(id, status) {
-            state[id] = status;
-            log(`Bot [${id.toUpperCase()}] ${status ? 'ACTIVADO' : 'DESACTIVADO'}.`);
-            sendToBridge();
-            render();
-        }
-
-        function toggleAll(status) {
-            BOTS.forEach(bot => state[bot.id] = status);
-            log(`Comando Global: Todos los bots ${status ? 'ACTIVADOS' : 'DESACTIVADOS'}.`);
-            sendToBridge();
-            render();
-        }
-
-        function sendToBridge() {
-            fetch('https://bluelock-server-xrff.onrender.com/api/status'), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(state)
-            })
-        .then(response => response.json())
-        .then(data => console.log("Estado sincronizado:", data))
-        .catch(error => console.error("Error al conectar con Render:", error));
-        }
-
-        render();
+        
+        // Enviar a Render (HTTPS)
+        fetch('https://bluelock-server-xrff.onrender.com/api/status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(state)
+        })
+        .then(res => res.json())
+        .then(data => console.log("Sincronizado:", data))
+        .catch(err => console.error("Error al conectar con Render:", err));
+    }
+    
+    // Ejecutar al cargar la página
+    window.onload = renderBots;
     </script>
 </body>
 </html>

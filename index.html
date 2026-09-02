@@ -389,7 +389,7 @@
         }
 
         function sendToBridge() {
-            fetch('https://bluelock-server-xrff.onrender.com/api/status', {
+            fetch('https://bluelock-server-xrff.onrender.com/api/status'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(state)

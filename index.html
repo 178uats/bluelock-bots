@@ -3,379 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blue Lock - Bot Manager System</title>
+    <title>Blue Lock - Panel de Bots</title>
     <style>
-        :root {
-            --bg-primary: #0a0e17;
-            --bg-card: #121824;
-            --accent-blue: #00f0ff;
-            --accent-glow: rgba(0, 240, 255, 0.35);
-            --danger: #ff0055;
-            --success: #00ff66;
-            --text-main: #f0f6fc;
-            --text-muted: #8b949e;
-            --border-color: #1f293d;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 2rem;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.05) 0%, transparent 40%);
-        }
-
-        header {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+            margin: 0;
         }
-
-        .title-group h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: var(--accent-blue);
-            text-shadow: 0 0 10px var(--accent-glow);
-            text-transform: uppercase;
+        h1 {
+            color: #38bdf8;
+            margin-bottom: 20px;
         }
-
-        .title-group p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .master-controls {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            background: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-start {
-            border-color: var(--success);
-            color: var(--success);
-        }
-
-        .btn-start:hover {
-            background: var(--success);
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
-        }
-
-        .btn-stop {
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        .btn-stop:hover {
-            background: var(--danger);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
-        }
-
-        .stats-bar {
+        .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
         }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 1.25rem;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-card .value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--accent-blue);
-            margin-top: 0.25rem;
-        }
-
-        .stat-card .label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
         .bot-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.25rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-
-        .bot-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-blue);
+        .bot-card h3 {
+            margin-top: 0;
+            color: #e2e8f0;
         }
-
-        .bot-card.active {
-            border-left: 4px solid var(--success);
-        }
-
-        .bot-card.inactive {
-            border-left: 4px solid var(--danger);
-            opacity: 0.75;
-        }
-
-        .bot-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .bot-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .bot-team {
-            font-size: 0.75rem;
-            background: var(--border-color);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            color: var(--text-muted);
-        }
-
-        .bot-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--danger);
-        }
-
-        .bot-card.active .status-dot {
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-        }
-
-        .switch-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.2);
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 22px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--border-color);
-            transition: .3s;
-            border-radius: 22px;
+            transition: background-color 0.2s;
         }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
+        .btn-off {
+            background-color: #ef4444;
+            color: white;
         }
-
-        input:checked + .slider {
-            background-color: var(--success);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-
-        .log-panel {
-            margin-top: 2rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
-        }
-
-        .log-panel h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent-blue);
-        }
-
-        .log-content {
-            background: #05070a;
-            padding: 1rem;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            height: 120px;
-            overflow-y: auto;
-            color: #33ff00;
+        .btn-on {
+            background-color: #22c55e;
+            color: white;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="title-group">
-            <h1>Blue Lock System Control</h1>
-            <p>Gestión y activación centralizada de inteligencias artificiales</p>
-        </div>
-        <div class="master-controls">
-            <button class="btn btn-start" onclick="toggleAll(true)">⚡ Activar Todos</button>
-            <button class="btn btn-stop" onclick="toggleAll(false)">🛑 Apagar Todos</button>
-        </div>
-    </header>
-
-    <div class="stats-bar">
-        <div class="stat-card">
-            <div class="label">Total Bots</div>
-            <div class="value" id="stat-total">14</div>
-        </div>
-        <div class="stat-card">
-            <div class="label">Conectados</div>
-            <div class="value" id="stat-active" style="color: var(--success);">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="label">Desconectados</div>
-            <div class="value" id="stat-inactive" style="color: var(--danger);">14</div>
-        </div>
-    </div>
-
-    <div class="grid" id="bot-grid"></div>
-
-    <div class="log-panel">
-        <h3>Terminal de Eventos del Sistema</h3>
-        <div class="log-content" id="sys-log">> Sistema iniciado. Listo para enviar comandos a main.py...<br></div>
-    </div>
+    <h1>Panel de Control - Blue Lock Bots</h1>
+    <div id="bot-container" class="grid-container"></div>
 
     <script>
-    // 1. Configuración de los 14 bots
-    const botsData = [
-        { id: 'barou', name: 'Shoei Barou' },
-        { id: 'niko', name: 'Ikki Niko' },
-        { id: 'aryu', name: 'Jyubei Aryu' },
-        { id: 'snuffy', name: 'Marc Snuffy' },
-        { id: 'lorenzo', name: 'Don Lorenzo' },
-        { id: 'aiku', name: 'Oliver Aiku' },
-        { id: 'sendo', name: 'Shuto Sendo' },
-        { id: 'yukio', name: 'Yukio Ishikari' },
-        { id: 'nagi', name: 'Seishiro Nagi' },
-        { id: 'reo', name: 'Mikage Reo' },
-        { id: 'chris', name: 'Chris Prince' },
-        { id: 'charles', name: 'Charles Chevalier' },
-        { id: 'shidou', name: 'Ryusei Shidou' },
-        { id: 'ego', name: 'Jinpachi Ego' }
-    ];
+        const botsData = [
+            { id: 'barou', name: 'Shoei Barou' },
+            { id: 'niko', name: 'Ikki Niko' },
+            { id: 'aryu', name: 'Jyubei Aryu' },
+            { id: 'snuffy', name: 'Marc Snuffy' },
+            { id: 'lorenzo', name: 'Don Lorenzo' },
+            { id: 'aiku', name: 'Oliver Aiku' },
+            { id: 'sendo', name: 'Shuto Sendo' },
+            { id: 'yukio', name: 'Yukio Ishikari' },
+            { id: 'nagi', name: 'Seishiro Nagi' },
+            { id: 'reo', name: 'Mikage Reo' },
+            { id: 'chris', name: 'Chris Prince' },
+            { id: 'charles', name: 'Charles Chevalier' },
+            { id: 'shidou', name: 'Ryusei Shidou' },
+            { id: 'ego', name: 'Jinpachi Ego' }
+        ];
 
-    // Estado global
-    let state = {};
-    botsData.forEach(bot => state[bot.id] = false);
+        let state = {};
+        botsData.forEach(bot => state[bot.id] = false);
 
-    // 2. Función para renderizar los botones en pantalla
-    function renderBots() {
-        const container = document.getElementById('bot-container');
-        if (!container) return;
-    
-        container.innerHTML = '';
-        botsData.forEach(bot => {
-            const card = document.createElement('div');
-            card.className = 'bot-card';
-            card.innerHTML = `
-                <h3>${bot.name}</h3>
-                <button id="btn-${bot.id}" onclick="toggleBot('${bot.id}')" class="btn-off">
-                    ${state[bot.id] ? 'Encendido' : 'Apagado'}
-                </button>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // 3. Función para cambiar el estado y enviar a Render
-    function toggleBot(botId) {
-        state[botId] = !state[botId];
-    
-        // Actualizar apariencia del botón
-        const btn = document.getElementById(`btn-${botId}`);
-        if (btn) {
-            btn.innerText = state[botId] ? 'Encendido' : 'Apagado';
-            btn.className = state[botId] ? 'btn-on' : 'btn-off';
+        function renderBots() {
+            const container = document.getElementById('bot-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            botsData.forEach(bot => {
+                const card = document.createElement('div');
+                card.className = 'bot-card';
+                card.innerHTML = `
+                    <h3>${bot.name}</h3>
+                    <button id="btn-${bot.id}" onclick="toggleBot('${bot.id}')" class="btn-off">
+                        ${state[bot.id] ? 'Encendido' : 'Apagado'}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
         }
-        
-        // Enviar a Render (HTTPS)
-        fetch('https://bluelock-server-xrff.onrender.com/api/status', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(state)
-        })
-        .then(res => res.json())
-        .then(data => console.log("Sincronizado:", data))
-        .catch(err => console.error("Error al conectar con Render:", err));
-    }
-    
-    // Ejecutar al cargar la página
-    window.onload = renderBots;
+
+        function toggleBot(botId) {
+            state[botId] = !state[botId];
+            
+            const btn = document.getElementById(`btn-${botId}`);
+            if (btn) {
+                btn.innerText = state[botId] ? 'Encendido' : 'Apagado';
+                btn.className = state[botId] ? 'btn-on' : 'btn-off';
+            }
+
+            fetch('https://bluelock-server-xrff.onrender.com/api/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(state)
+            })
+            .then(res => res.json())
+            .then(data => console.log("Sincronizado:", data))
+            .catch(err => console.error("Error con Render:", err));
+        }
+
+        window.onload = renderBots;
     </script>
 </body>
 </html>
